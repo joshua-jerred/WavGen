@@ -30,7 +30,7 @@ WavGen::WavGen(std::string filename) {
     writeBytes(bits_per_sample_, 2); // bits per sample
     wav_file_ << "data****"; // actual follows this
 
-    data_start_ = wav_file_.tellp(); // Save the posistion of the start of the
+    data_start_ = wav_file_.tellp(); // Save the position of the start of the
                                      // data chunk
 }
 
@@ -50,16 +50,17 @@ void WavGen::done() {
 }
 
 void WavGen::addSineWave(int freq, float amp, float duration) {
-    float offset = 2 * M_PI * freq / sample_rate_;
+    float offset = 2 * M_PI * freq / sample_rate_; // The offset of the angle
+                                                   // between samples
     
-    // These 3 values are persistant through the for Loop
+    // These 2 values are persistent through the for Loop
     float frequency = freq;
     float amplitude = amp;
-    float angle = 0.0f;
+    
 
     for(int i = 0; i < std::floor(sample_rate_ * duration); i++ ) { // For each sample
-        angle += offset;
-        int sample = static_cast<int> ((amplitude * sin(angle)) * max_amplitude_);
+        wave_angle_ += offset;
+        int sample = static_cast<int> ((amplitude * sin(wave_angle_)) * max_amplitude_);
         writeBytes(sample, 2);
     }
 }

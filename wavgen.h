@@ -20,6 +20,8 @@ private:
     const int bits_per_sample_ = 16; // The number of bits per sample.
     const int max_amplitude_ = pow(2, bits_per_sample_ - 1) - 1; // The maximum amplitude value
 
+    float wave_angle_ = 0.0f; // Angle of the sine wave, needs to be persistent to get a continuous wave
+
     int data_start_; // The position of the start of the data chunk plus 10 bytes.
     int data_end_; // The position of the end of the data chunk.
 
