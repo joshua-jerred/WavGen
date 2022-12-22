@@ -3,7 +3,7 @@
 int main() {
     WavGen wav("test.wav");
     wav.addSineWave(200, 1, 0.5);
-    wav.addSineWave(100, 1, 3);
+    wav.addSineWave(100, 1, 1);
     
     // Random Sequency of Sine Waves
     for (int i = 0; i < 20; i++) {
