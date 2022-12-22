@@ -18,6 +18,13 @@
 WavGen::WavGen(std::string filename) {
     wav_file_.open(filename, std::ios::binary);
 
+    if (!wav_file_.is_open()) {
+        throw std::runtime_error("Could not open file");
+        file_open_ = false;
+        return;
+    } else {
+        file_open_ = true;
+    }
 
     wav_file_ << "RIFF****WAVE"; // RIFF header
     wav_file_ << "fmt "; // format
@@ -38,7 +45,38 @@ WavGen::~WavGen() {
     wav_file_.close();
 }
 
-void WavGen::done() {
+void WavGen::addSineWave(int freq, float amp, float duration) {
+    float offset = 2 * M_PI * freq / sample_rate_; // The offset of the angle
+                                                   // between samples
+    
+    // These 2 values are persistent through the for Loop
+    float amplitude = amp;
+    
+
+    for(int i = 0; i < std::floor(sample_rate_ * duration); i++ ) { // For each sample
+        wave_angle_ += offset;
+        int sample = static_cast<int> ((amplitude * sin(wave_angle_)) * max_amplitude_);
+        writeBytes(sample, 2);
+        if (wave_angle_ > 2 * M_PI) {
+            wave_angle_ -= 2 * M_PI;
+        }
+    }
+}
+
+void WavGen::addSample(double sample) {
+    if (sample > 1.0) {
+        sample = 1.0;
+    } else if (sample < -1.0) {
+        sample = -1.0;
+    }
+    int sample_int = static_cast<int> (sample * max_amplitude_);
+    writeBytes(sample_int, 2);
+}
+
+bool WavGen::done() {
+    if (!file_open_) {
+        return false;
+    }
     data_end_ = wav_file_.tellp(); // Save the position of the end of the data
                                    // chunk
 
@@ -47,24 +85,11 @@ void WavGen::done() {
     wav_file_.seekp(4, std::ios::beg); // Go to the beginning of the file
     writeBytes(data_end_ - 8, 4); // Write the size of the overall file
     wav_file_.close();
-}
-
-void WavGen::addSineWave(int freq, float amp, float duration) {
-    float offset = 2 * M_PI * freq / sample_rate_; // The offset of the angle
-                                                   // between samples
-    
-    // These 2 values are persistent through the for Loop
-    float frequency = freq;
-    float amplitude = amp;
-    
-
-    for(int i = 0; i < std::floor(sample_rate_ * duration); i++ ) { // For each sample
-        wave_angle_ += offset;
-        int sample = static_cast<int> ((amplitude * sin(wave_angle_)) * max_amplitude_);
-        writeBytes(sample, 2);
-    }
+    return true;
 }
 
 void WavGen::writeBytes(int data, int size) {
-    wav_file_.write(reinterpret_cast<const char*> (&data), size);
+    if (file_open_) {
+        wav_file_.write(reinterpret_cast<const char*> (&data), size);
+    }
 }
