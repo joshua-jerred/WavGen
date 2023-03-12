@@ -11,6 +11,7 @@ public:
     ~WavGen();
     void addSineWave(int freq, float amp, float duration);
     void addSample(double sample);
+    int getSampleRate() { return sample_rate_;}
     bool done();
 
 private:
