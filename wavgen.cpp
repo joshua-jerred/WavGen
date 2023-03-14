@@ -80,6 +80,25 @@ void WavGen::addSineWave(int freq, float amp, float duration) {
   }
 }
 
+void WavGen::addSineWaveSamples(int freq, float amplitude, int total_samples) {
+  float offset = 2 * M_PI * freq / sample_rate_;  // The offset of the angle
+                                                  // between samples
+  if (total_samples < 0) {
+    return;
+  }
+
+  for (int i = 0; i < total_samples; i++) {  // For each sample
+    wave_angle_ += offset;
+    int sample = static_cast<int>((amplitude * sin(wave_angle_)) *
+                                  max_amplitude_);
+    writeBytes(sample, 2);
+
+    if (wave_angle_ > 2 * M_PI) {
+      wave_angle_ -= 2 * M_PI;
+    }
+  }
+}
+
 void WavGen::addSample(double sample) {
   if (sample > 1.0) {
     sample = 1.0;

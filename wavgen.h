@@ -19,6 +19,7 @@ class WavGen {
   WavGen(std::string filename);
   ~WavGen();
   void addSineWave(int freq, float amp, float duration);
+  void addSineWaveSamples(int freq, float amp, int samples);
   void addSample(double sample);
   int getSampleRate() { return sample_rate_; }
   bool done();
