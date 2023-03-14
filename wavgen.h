@@ -16,7 +16,7 @@
 
 class WavGen {
  public:
-  WavGen(std::string filename);
+  WavGen(std::string filename, int sample_rate = 44100);
   ~WavGen();
   void addSineWave(int freq, float amp, float duration);
   void addSineWaveSamples(int freq, float amp, int samples);
@@ -32,7 +32,7 @@ class WavGen {
 
   bool file_open_ = false;
 
-  const int sample_rate_ = 44100;   // The number of samples per second.
+  const int sample_rate_;   // The number of samples per second.
   const int bits_per_sample_ = 16;  // The number of bits per sample.
   const int max_amplitude_ =
       pow(2, bits_per_sample_ - 1) - 1;  // The maximum amplitude value

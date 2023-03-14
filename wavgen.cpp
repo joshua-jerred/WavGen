@@ -18,7 +18,7 @@
   150  // Look at the sine wave in Audacity, you'll see the smoothing on sine
        // waves
 
-WavGen::WavGen(std::string filename) {
+WavGen::WavGen(std::string filename, int sample_rate) : sample_rate_(sample_rate) {
   wav_file_.open(filename, std::ios::binary);
 
   if (!wav_file_.is_open()) {
