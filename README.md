@@ -1,3 +1,5 @@
+[![WavGen Tests (C++ CI)](https://github.com/joshua-jerred/WavGen/actions/workflows/tests.yaml/badge.svg)](https://github.com/joshua-jerred/WavGen/actions/workflows/tests.yaml)
+
 # WavGen
 
 A simple C++ library for generating wav files.
