@@ -7,7 +7,7 @@
  */
 
 #include "file.hpp"
-#include "wav_file.hpp"
+#include "wav_gen.hpp"
 
 namespace wavgen {
 

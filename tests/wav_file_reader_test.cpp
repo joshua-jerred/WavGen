@@ -3,7 +3,7 @@
 #include "gtest/gtest.h"
 
 #include "constants.hpp"
-#include "wav_file.hpp"
+#include "wav_gen.hpp"
 
 const std::string kTestFileName = "test.wav";
 const uint32_t kHeaderSize = 44;

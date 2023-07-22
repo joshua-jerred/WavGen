@@ -7,66 +7,73 @@
  * @copyright Copyright (c) 2022
  */
 
-#include "wavgen.h"
-
 #include <cmath>
-#include <fstream>
-#include <iostream>
-#include <string>
 
-#define SINE_FILTER_SAMPLES                                                    \
-  150 // Look at the sine wave in Audacity, you'll see the smoothing on sine
-      // waves
+#include "constants.hpp"
+#include "wav_gen.hpp"
 
-void WavGen::addSineWave(int freq, float amp, float duration) {
-  float offset = 2 * M_PI * freq / sample_rate_; // The offset of the angle
-                                                 // between samples
+inline constexpr double pi2() {
+  return std::atan(1) * 4 * 2;
+}
 
-  // These 2 values are persistent through the for Loop
-  float amplitude = amp;
+namespace wavgen {
 
-  int total_samples = std::floor(sample_rate_ * duration);
-  float filter = 0.0f; // Filter to reduce the amplitude of the wav in the
-                       // first and last SINE_FILTER_SAMPLES samples
-  float filter_step =
-      1.0f / SINE_FILTER_SAMPLES; // The amount to increase the filter by each
-                                  // sample to get a smooth transition
+void Generator::addSineWave(uint16_t frequency, double amplitude,
+                            uint16_t duration_ms) {
 
-  for (int i = 0; i < total_samples; i++) { // For each sample
-    wave_angle_ += offset;
-    int sample = static_cast<int>((filter * amplitude * sin(wave_angle_)) *
-                                  max_amplitude_);
-    writeBytes(sample, 2);
+  /**
+   * @brief The delta angle between samples.
+   */
+  const double d_wave = pi2() * frequency / kSampleRate;
 
-    if (wave_angle_ > 2 * M_PI) {
-      wave_angle_ -= 2 * M_PI;
+  /**
+   * @brief The delta of the filter.
+   */
+  const double d_filter = 1.0f / kSineWaveFilterSamples;
+  const uint32_t total_samples = kSampleRateMs * duration_ms;
+
+  /**
+   * @brief Filter to reduce the amplitude of the wave in the first and last
+   * kSineWaveFilterSamples samples.
+   */
+  double filter = 0.0f;
+
+  for (uint32_t i = 0; i < total_samples; i++) { // For each sample
+    wave_angle_ += d_wave;
+    int16_t sample = static_cast<int16_t>(
+        (filter * amplitude * sin(wave_angle_)) * kMaxAmplitude);
+    addSample(sample);
+
+    if (wave_angle_ > pi2()) {
+      wave_angle_ -= pi2();
     }
 
-    if (i < SINE_FILTER_SAMPLES) { // Adjust the filter
-      filter += filter_step;
-    } else if (i > total_samples - SINE_FILTER_SAMPLES) {
-      filter -= filter_step;
+    // Adjust the filter
+    if (i < kSineWaveFilterSamples) {
+      filter += d_filter;
+    } else if (i > total_samples - kSineWaveFilterSamples) {
+      filter -= d_filter;
     } else {
       filter = 1.0f;
     }
   }
 }
 
-void WavGen::addSineWaveSamples(int freq, float amplitude, int total_samples) {
-  float offset = 2 * M_PI * freq / sample_rate_; // The offset of the angle
-                                                 // between samples
-  if (total_samples < 0) {
-    return;
-  }
+void Generator::addSineWaveSamples(uint16_t frequency, double amplitude,
+                                   uint32_t samples) {
+  float offset = pi2() * frequency / kSampleRate; // The offset of the angle
+                                                  // between samples
 
-  for (int i = 0; i < total_samples; i++) { // For each sample
+  for (uint32_t i = 0; i < samples; i++) {        // For each sample
     wave_angle_ += offset;
-    int sample =
-        static_cast<int>((amplitude * sin(wave_angle_)) * max_amplitude_);
-    writeBytes(sample, 2);
+    int16_t sample =
+        static_cast<int16_t>((amplitude * sin(wave_angle_)) * kMaxAmplitude);
+    addSample(sample);
 
-    if (wave_angle_ > 2 * M_PI) {
-      wave_angle_ -= 2 * M_PI;
+    if (wave_angle_ > pi2()) {
+      wave_angle_ -= pi2();
     }
   }
 }
+
+} // namespace wavgen

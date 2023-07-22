@@ -4,7 +4,7 @@
 
 #include "constants.hpp"
 #include "file.hpp"
-#include "wav_file.hpp"
+#include "wav_gen.hpp"
 
 const std::string kTestFileName = "test.wav";
 const uint32_t kHeaderSize = 44;

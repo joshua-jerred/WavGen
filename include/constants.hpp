@@ -10,14 +10,21 @@
 #define CONSTANTS_HPP_
 
 #include <cstdint>
-#include <string>
 
 namespace wavgen {
 
 inline constexpr uint32_t kSampleRate = 480000;
 inline constexpr uint32_t kBitsPerSample = 16;
-inline constexpr int32_t kMaxAmplitude = (1 << (kBitsPerSample - 1)) - 1;
+inline constexpr int32_t kMaxAmplitude = (1 << (kBitsPerSample - 1)) - 10;
 inline constexpr uint16_t kHeaderSize = 44;
+
+/**
+ * @brief The number of samples to smooth the sine wave with when
+ * adding a sine wave to the WAV file with the generator.
+ */
+inline constexpr uint16_t kSineWaveFilterSamples = 150;
+
+inline constexpr uint32_t kSampleRateMs = kSampleRate / 1000;
 
 } // namespace wavgen
 

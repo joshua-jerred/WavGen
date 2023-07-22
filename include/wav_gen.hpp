@@ -1,5 +1,5 @@
 /**
- * @file wav_file.hpp
+ * @file wav_gen.hpp
  * @author Joshua Jerred (https://joshuajer.red)
  * @brief A simple WAV file structure (16-bit, single channel)
  * @date 2023-07-21

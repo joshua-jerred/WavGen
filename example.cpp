@@ -7,33 +7,33 @@
  * @version 1.0
  */
 
-#include "wavgen.h"
+#include "wav_gen.hpp"
 
 int main() {
-  WavGen wav("test.wav");
-  wav.addSineWave(200, 1, 0.5);
-  wav.addSineWave(100, 1, 1);
+  wavgen::Generator wav("test.wav");
+  wav.addSineWave(200, 1, 500);
+  wav.addSineWave(100, 1, 1000);
 
   // Random Sequence of Sine Waves
   for (int i = 0; i < 20; i++) {
-    wav.addSineWave(rand() % 4000, 1, 0.1);
+    wav.addSineWave(rand() % 4000, 1, 100);
   }
 
   // Triangle wave
-  double sample = 0.0;
-  double delta = 0.001;
-  int total_samples = 100000;
+  int16_t sample = 0.0;
+  int16_t delta = 50;
+  int total_samples = 880000;
   for (int i = 0; i < total_samples; i++) {
     wav.addSample(sample);
     sample += delta;
-    if (sample > 1.0) {
+    if (sample > 32000) {
       delta = -delta;
-    } else if (sample < -1.0) {
+    } else if (sample < -32000) {
       delta = -delta;
     }
-    if (i % 1000 == 0 && i < total_samples / 2) {
+    if (i % 10000 == 0 && i < total_samples / 2) {
       delta = delta * 1.1;
-    } else if (i % 1000 == 0 && i > total_samples / 2) {
+    } else if (i % 10000 == 0 && i > total_samples / 2) {
       delta = delta * 0.9;
     }
   }
