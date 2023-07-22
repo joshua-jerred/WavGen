@@ -2,8 +2,9 @@ enable_testing()
 find_package(GTest REQUIRED)
 
 add_executable(wavgen_unit_tests
-  wav_file_test.cpp
   header_test.cpp
+  wav_file_writer_test.cpp
+  wav_file_reader_test.cpp
   ${SRC}/wav_file_reader.cpp
   ${SRC}/wav_file_writer.cpp
   ${SRC}/header.cpp

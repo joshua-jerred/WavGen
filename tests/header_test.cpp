@@ -2,6 +2,7 @@
 
 #include "gtest/gtest.h"
 
+#include "file.hpp"
 #include "wav_file.hpp"
 
 const std::string kTestFileName = "test.wav";

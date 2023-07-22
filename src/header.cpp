@@ -67,7 +67,7 @@ std::ifstream &operator>>(std::ifstream &in_file, WavHeader &header) {
   }
 
   // Ensure that the file is large enough to contain a header.
-  const uint32_t file_size = getFileSize(in_file);
+  const uint32_t file_size = calculateFileSize(in_file);
   if (file_size < kWavHeaderSize) {
     throw std::runtime_error("Failed to read header. File is too small.");
   }

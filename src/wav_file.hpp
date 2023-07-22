@@ -9,19 +9,17 @@
 #ifndef WAV_FILE_HPP_
 #define WAV_FILE_HPP_
 
+#include <fstream>
+#include <vector>
+
 #include "constants.hpp"
-#include "file.hpp"
 
 namespace wavgen {
 
-struct WavHeader {
-  uint32_t file_size;
-  uint32_t data_chunk_size;
-};
-
-std::ofstream &operator<<(std::ofstream &out_file, const WavHeader &header);
-std::ifstream &operator>>(std::ifstream &in_file, WavHeader &header);
-
+/**
+ * @brief The base class for WAV files.
+ *
+ */
 class WavFile {
 public:
   WavFile() = default;
@@ -44,44 +42,44 @@ public:
   }
 
   /**
-   * @brief Get the size of the data chunk in bytes.
-   *
-   * @return uint32_t - The size of the data chunk in bytes.
-   */
-  virtual uint32_t getDataChunkSize();
-
-  /**
    * @brief Get the number of samples in the WAV file.
    * @return uint32_t - The number of samples in the WAV file.
    */
-  virtual uint32_t getNumSamples();
+  virtual uint32_t getNumSamples() = 0;
 
   /**
    * @brief Get the duration of the WAV file in milliseconds.
    * @return uint32_t - The duration in milliseconds.
    */
-  virtual uint32_t getDuration();
+  virtual uint32_t getDuration() = 0;
 
   /**
    * @brief Get the size of the WAV file in bytes.
    * @return uint32_t - The size of the WAV file in bytes.
    */
-  virtual uint32_t getFileSize();
+  virtual uint32_t getFileSize() = 0;
 };
 
-class WavFileWriter : public WavFile {
+/**
+ * @brief A class to write WAV files.
+ */
+class Writer : public WavFile {
 public:
   /**
    * @brief Open a WAV file for writing.
    *
    * @param output_file_path - The name of the file to write to.
    */
-  WavFileWriter(std::string output_file_path);
+  Writer(std::string output_file_path);
 
   /**
-   * @brief Deconstructor for the WAV file. This will call done().
+   * @brief Deconstructor for the WAV file writer. This will call done().
    */
-  ~WavFileWriter();
+  ~Writer();
+
+  uint32_t getNumSamples() override;
+  uint32_t getDuration() override;
+  uint32_t getFileSize() override;
 
   /**
    * @brief Add a sample to the WAV file. This is a fast operation.
@@ -104,9 +102,67 @@ public:
 
 private:
   std::ofstream wav_file_{};
-  std::streampos data_start_ = 0;
 };
 
+class Generator : public Writer {
+public:
+  Generator(std::string output_file_path) : Writer(output_file_path) {
+  }
+  ~Generator() = default;
+
+  /**
+   * @brief Add a sine wave to the WAV file with a given frequency, amplitude,
+   * and duration.
+   *
+   * @param frequency - The frequency of the sine wave in Hz.
+   * @param amplitude - The amplitude of the sine wave (0.0 - 1.0)
+   * @param duration - The duration of the sine wave in milliseconds.
+   */
+  void addSineWave(uint16_t frequency, double amplitude, uint16_t duration_ms);
+
+  /**
+   * @brief Add a sine wave to the WAV file for a given number of samples.
+   *
+   * @param frequency - The frequency of the sine wave in Hz.
+   * @param amplitude - The amplitude of the sine wave (0.0 - 1.0)
+   * @param samples - The number of samples to add to the WAV file.
+   */
+  void addSineWaveSamples(uint16_t frequency, double amplitude,
+                          uint32_t samples);
+
+private:
+  /**
+   * @brief The angle of the sine wave, persistent to get a continuous wave.
+   */
+  double wave_angle_ = 0.0f;
+};
+
+/**
+ * @brief A class to read WAV files.
+ */
+class Reader : public WavFile {
+public:
+  /**
+   * @brief Open a WAV file for reading.
+   *
+   * @param input_file_path - The name of the file to read from.
+   */
+  Reader(std::string input_file_path);
+
+  /**
+   * @brief Deconstructor for the WAV file reader.
+   */
+  ~Reader() = default;
+
+  uint32_t getNumSamples() override;
+  uint32_t getDuration() override;
+  uint32_t getFileSize() override;
+
+  void getAllSamples(std::vector<int16_t> &samples);
+
+private:
+  std::ifstream wav_file_{};
+};
 } // namespace wavgen
 
 #endif /* WAV_FILE_HPP_ */
