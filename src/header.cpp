@@ -6,6 +6,7 @@
  * @copyright Copyright (c) 2023
  */
 
+#include <array>
 #include <filesystem>
 
 #include "constants.hpp"
