@@ -1,13 +1,24 @@
 cmake_minimum_required(VERSION 3.14)
 project(WavGen VERSION 1.0 DESCRIPTION "WAV file generator")
 
-set(CMAKE_CXX_STANDARD 20)
+option(WAVGEN_UNIT_TESTS "Enable tests" ON)
+
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ansi -pedantic -Wall -Wextra -Weffc++ -Wdisabled-optimization -Wfloat-equal")
 
+set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-add_library(WavGenlib STATIC
-    wavgen.cpp
+add_library(WavGen STATIC
+    ./src/wav_file_reader.cpp
+)
+target_include_directories(WavGen
+    PUBLIC ./include
+    PRIVATE ./src
 )
 
-add_executable(example example.cpp)
-target_link_libraries(example WavGenlib)
+if(WAVGEN_UNIT_TESTS)
+    add_subdirectory(tests)
+endif()
+
+# add_executable(example example.cpp)
+# target_link_libraries(example WavGenlib)
