@@ -12,9 +12,27 @@
 #include <fstream>
 #include <vector>
 
-#include "constants.hpp"
-
 namespace wavgen {
+
+/**
+ * @brief The sample rate of the WAV file.
+ */
+inline constexpr uint32_t SAMPLE_RATE = 48000;
+inline constexpr uint32_t SAMPLE_RESOLUTION = 16;
+inline constexpr int32_t MAX_SAMPLE_AMPLITUDE =
+    (1 << (SAMPLE_RESOLUTION - 1)) - 10;
+inline constexpr uint16_t HEADER_SIZE = 44;
+
+/**
+ * @brief The number of samples to smooth the sine wave with when
+ * adding a sine wave to the WAV file with the generator.
+ */
+inline constexpr uint16_t SINE_WAVE_SAMPLES_TO_FILTER = 150;
+
+/**
+ * @brief The number of samples per millisecond.
+ */
+inline constexpr uint32_t SAMPLE_RATE_MS = SAMPLE_RATE / 1000;
 
 /**
  * @brief The base class for WAV files.
@@ -30,7 +48,7 @@ public:
    * @return uint32_t - The sample rate.
    */
   uint32_t getSampleRate() const {
-    return kSampleRate;
+    return SAMPLE_RATE;
   }
 
   /**
@@ -38,7 +56,7 @@ public:
    * @return uint32_t - The number of bits per sample.
    */
   uint32_t getBitsPerSample() const {
-    return kBitsPerSample;
+    return SAMPLE_RESOLUTION;
   }
 
   /**
@@ -67,7 +85,6 @@ class Writer : public WavFile {
 public:
   /**
    * @brief Open a WAV file for writing.
-   *
    * @param output_file_path - The name of the file to write to.
    */
   Writer(std::string output_file_path);
@@ -83,14 +100,12 @@ public:
 
   /**
    * @brief Add a sample to the WAV file. This is a fast operation.
-   *
    * @param sample - A 16-bit signed sample to add to the file.
    */
   void addSample(int16_t sample);
 
   /**
    * @brief Add a sample to the WAV file. This is a slower operation.
-   *
    * @param sample - A double that will be converted to a 16-bit signed sample.
    */
   void addSample(double sample);

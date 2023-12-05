@@ -9,7 +9,6 @@
 
 #include <cmath>
 
-#include "constants.hpp"
 #include "wav_gen.hpp"
 
 inline constexpr double pi2() {
@@ -24,24 +23,24 @@ void Generator::addSineWave(uint16_t frequency, double amplitude,
   /**
    * @brief The delta angle between samples.
    */
-  const double d_wave = pi2() * frequency / kSampleRate;
+  const double d_wave = pi2() * frequency / SAMPLE_RATE;
 
   /**
    * @brief The delta of the filter.
    */
-  const double d_filter = 1.0f / kSineWaveFilterSamples;
-  const uint32_t total_samples = kSampleRateMs * duration_ms;
+  const double d_filter = 1.0f / SINE_WAVE_SAMPLES_TO_FILTER;
+  const uint32_t total_samples = SAMPLE_RATE_MS * duration_ms;
 
   /**
    * @brief Filter to reduce the amplitude of the wave in the first and last
-   * kSineWaveFilterSamples samples.
+   * SINE_WAVE_SAMPLES_TO_FILTER samples.
    */
   double filter = 0.0f;
 
   for (uint32_t i = 0; i < total_samples; i++) { // For each sample
     wave_angle_ += d_wave;
     int16_t sample = static_cast<int16_t>(
-        (filter * amplitude * sin(wave_angle_)) * kMaxAmplitude);
+        (filter * amplitude * sin(wave_angle_)) * MAX_SAMPLE_AMPLITUDE);
     addSample(sample);
 
     if (wave_angle_ > pi2()) {
@@ -49,9 +48,9 @@ void Generator::addSineWave(uint16_t frequency, double amplitude,
     }
 
     // Adjust the filter
-    if (i < kSineWaveFilterSamples) {
+    if (i < SINE_WAVE_SAMPLES_TO_FILTER) {
       filter += d_filter;
-    } else if (i > total_samples - kSineWaveFilterSamples) {
+    } else if (i > total_samples - SINE_WAVE_SAMPLES_TO_FILTER) {
       filter -= d_filter;
     } else {
       filter = 1.0f;
@@ -61,13 +60,13 @@ void Generator::addSineWave(uint16_t frequency, double amplitude,
 
 void Generator::addSineWaveSamples(uint16_t frequency, double amplitude,
                                    uint32_t samples) {
-  float offset = pi2() * frequency / kSampleRate; // The offset of the angle
+  float offset = pi2() * frequency / SAMPLE_RATE; // The offset of the angle
                                                   // between samples
 
-  for (uint32_t i = 0; i < samples; i++) {        // For each sample
+  for (uint32_t i = 0; i < samples; i++) { // For each sample
     wave_angle_ += offset;
-    int16_t sample =
-        static_cast<int16_t>((amplitude * sin(wave_angle_)) * kMaxAmplitude);
+    int16_t sample = static_cast<int16_t>((amplitude * sin(wave_angle_)) *
+                                          MAX_SAMPLE_AMPLITUDE);
     addSample(sample);
 
     if (wave_angle_ > pi2()) {

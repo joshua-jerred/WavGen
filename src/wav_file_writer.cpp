@@ -42,7 +42,7 @@ uint32_t Writer::getFileSize() {
 
 void Writer::addSample(double sample) {
   std::clamp(sample, -1.0, 1.0);
-  int16_t sample_int = static_cast<int16_t>(sample * kMaxAmplitude);
+  int16_t sample_int = static_cast<int16_t>(sample * MAX_SAMPLE_AMPLITUDE);
   writeBytes<2>(wav_file_, sample_int);
 }
 

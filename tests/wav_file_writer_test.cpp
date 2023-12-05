@@ -2,12 +2,11 @@
 
 #include "gtest/gtest.h"
 
-#include "constants.hpp"
 #include "file.hpp"
 #include "wav_gen.hpp"
 
 const std::string kTestFileName = "test.wav";
-const uint32_t kHeaderSize = 44;
+const uint32_t HEADER_SIZE = 44;
 
 class WavFileWriterTest : public ::testing::Test {
 protected:
@@ -35,14 +34,14 @@ TEST_F(WavFileWriterTest, GeneratesEmptyWavWithHeader) {
 
   // ASSERT
   ASSERT_TRUE(std::filesystem::exists(kTestFileName));
-  ASSERT_EQ(std::filesystem::file_size(kTestFileName), kHeaderSize);
+  ASSERT_EQ(std::filesystem::file_size(kTestFileName), HEADER_SIZE);
 }
 
 TEST_F(WavFileWriterTest, AddSamplesIncreasesFileSize) {
   constexpr uint32_t kNumSamplesToAdd = 100;
   constexpr uint32_t kBytesPerSample = 2;
   constexpr uint32_t kExpectedFileSize =
-      kHeaderSize + kNumSamplesToAdd * kBytesPerSample;
+      HEADER_SIZE + kNumSamplesToAdd * kBytesPerSample;
 
   // SETUP
   wavgen::Writer wav_file(kTestFileName);
@@ -60,10 +59,10 @@ TEST_F(WavFileWriterTest, AddSamplesIncreasesFileSize) {
 }
 
 TEST_F(WavFileWriterTest, DurationCalculatedCorrectly) {
-  constexpr uint32_t kNumSamplesToAdd = wavgen::kSampleRate;
+  constexpr uint32_t kNumSamplesToAdd = wavgen::SAMPLE_RATE;
   constexpr uint32_t kBytesPerSample = 2;
   constexpr uint32_t kExpectedFileSize =
-      kHeaderSize + kNumSamplesToAdd * kBytesPerSample;
+      HEADER_SIZE + kNumSamplesToAdd * kBytesPerSample;
 
   // SETUP
   wavgen::Writer wav_file(kTestFileName);
@@ -81,14 +80,14 @@ TEST_F(WavFileWriterTest, DurationCalculatedCorrectly) {
   ASSERT_EQ(std::filesystem::file_size(kTestFileName), kExpectedFileSize);
   ASSERT_EQ(num_samples, kNumSamplesToAdd);
   ASSERT_EQ(duration_ms, 1000);
-  ASSERT_EQ(file_size - kHeaderSize, kNumSamplesToAdd * kBytesPerSample);
+  ASSERT_EQ(file_size - HEADER_SIZE, kNumSamplesToAdd * kBytesPerSample);
 }
 
 TEST_F(WavFileWriterTest, HeaderSavedCorrectly) {
-  constexpr uint32_t kNumSamplesToAdd = wavgen::kSampleRate;
+  constexpr uint32_t kNumSamplesToAdd = wavgen::SAMPLE_RATE;
   constexpr uint32_t kBytesPerSample = 2;
   constexpr uint32_t kExpectedFileSize =
-      kHeaderSize + kNumSamplesToAdd * kBytesPerSample;
+      HEADER_SIZE + kNumSamplesToAdd * kBytesPerSample;
 
   // SETUP
   wavgen::Writer wav_file(kTestFileName);

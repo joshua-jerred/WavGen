@@ -2,11 +2,10 @@
 
 #include "gtest/gtest.h"
 
-#include "constants.hpp"
 #include "wav_gen.hpp"
 
 const std::string kTestFileName = "test.wav";
-const uint32_t kHeaderSize = 44;
+const uint32_t HEADER_SIZE = 44;
 
 class WavFileReaderTest : public ::testing::Test {
 protected:
@@ -36,14 +35,14 @@ TEST_F(WavFileReaderTest, ReadsEmptyWavWithHeader) {
   wavgen::Reader reader(kTestFileName);
   ASSERT_EQ(reader.getNumSamples(), 0);
   ASSERT_EQ(reader.getDuration(), 0);
-  ASSERT_EQ(reader.getFileSize(), kHeaderSize);
+  ASSERT_EQ(reader.getFileSize(), HEADER_SIZE);
 }
 
 TEST_F(WavFileReaderTest, ReadsHeaderCorrectly) {
   constexpr uint32_t kNumSamplesToAdd = 100;
   constexpr uint32_t kBytesPerSample = 2;
   constexpr uint32_t kExpectedFileSize =
-      kHeaderSize + kNumSamplesToAdd * kBytesPerSample;
+      HEADER_SIZE + kNumSamplesToAdd * kBytesPerSample;
 
   // SETUP
   wavgen::Writer writer(kTestFileName);
@@ -61,10 +60,10 @@ TEST_F(WavFileReaderTest, ReadsHeaderCorrectly) {
 }
 
 TEST_F(WavFileReaderTest, DurationCalculatedCorrectly) {
-  constexpr uint32_t kNumSamplesToAdd = wavgen::kSampleRate;
+  constexpr uint32_t kNumSamplesToAdd = wavgen::SAMPLE_RATE;
   constexpr uint32_t kBytesPerSample = 2;
   constexpr uint32_t kExpectedFileSize =
-      kHeaderSize + kNumSamplesToAdd * kBytesPerSample;
+      HEADER_SIZE + kNumSamplesToAdd * kBytesPerSample;
 
   // SETUP
   wavgen::Writer writer(kTestFileName);
@@ -82,7 +81,7 @@ TEST_F(WavFileReaderTest, DurationCalculatedCorrectly) {
   // ASSERT
   ASSERT_EQ(num_samples, kNumSamplesToAdd);
   ASSERT_EQ(duration_ms, 1000);
-  ASSERT_EQ(file_size - kHeaderSize, kNumSamplesToAdd * kBytesPerSample);
+  ASSERT_EQ(file_size - HEADER_SIZE, kNumSamplesToAdd * kBytesPerSample);
   ASSERT_EQ(file_size, kExpectedFileSize);
 }
 

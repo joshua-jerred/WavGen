@@ -11,7 +11,7 @@
 
 #include <fstream>
 
-#include "constants.hpp"
+#include "wav_gen.hpp"
 
 namespace wavgen {
 
@@ -82,7 +82,7 @@ template <typename stream_t> inline void validateFileOpen(stream_t &wav_file) {
 template <typename stream_t>
 inline uint32_t calculateDataChunkSize(stream_t &file) {
   auto file_size = calculateFileSize(file);
-  auto data_chunk_size = file_size - kHeaderSize;
+  auto data_chunk_size = file_size - HEADER_SIZE;
   return data_chunk_size;
 }
 
@@ -107,7 +107,7 @@ inline uint32_t calculateHeaderFileSize(stream_t &file) {
  */
 template <typename stream_t> inline uint32_t calculateDuration(stream_t &file) {
   auto num_samples = calculateNumberOfSamples(file);
-  constexpr uint32_t kSamplesPerMillisecond = kSampleRate / 1000;
+  constexpr uint32_t kSamplesPerMillisecond = SAMPLE_RATE / 1000;
   return num_samples / kSamplesPerMillisecond;
 }
 

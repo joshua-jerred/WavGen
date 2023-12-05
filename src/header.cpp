@@ -9,7 +9,6 @@
 #include <array>
 #include <filesystem>
 
-#include "constants.hpp"
 #include "file.hpp"
 #include "wav_gen.hpp"
 
@@ -27,8 +26,8 @@ inline constexpr uint32_t kFormatCode = 1;
 inline constexpr uint32_t kNumChannels = 1;
 
 inline constexpr uint32_t kByteRate =
-    (kSampleRate * kBitsPerSample * kNumChannels) / 8;
-inline constexpr uint32_t kBlockAlign = (kBitsPerSample * kNumChannels) / 8;
+    (SAMPLE_RATE * SAMPLE_RESOLUTION * kNumChannels) / 8;
+inline constexpr uint32_t kBlockAlign = (SAMPLE_RESOLUTION * kNumChannels) / 8;
 const std::string kDataChunkDescriptor = "data";
 
 std::ofstream &operator<<(std::ofstream &out_file, const WavHeader &header) {
@@ -50,10 +49,10 @@ std::ofstream &operator<<(std::ofstream &out_file, const WavHeader &header) {
   writeBytes<4>(out_file, kFormatChunkSize);
   writeBytes<2>(out_file, kFormatCode);
   writeBytes<2>(out_file, kNumChannels);
-  writeBytes<4>(out_file, kSampleRate);
+  writeBytes<4>(out_file, SAMPLE_RATE);
   writeBytes<4>(out_file, kByteRate);
   writeBytes<2>(out_file, kBlockAlign);
-  writeBytes<2>(out_file, kBitsPerSample);
+  writeBytes<2>(out_file, SAMPLE_RESOLUTION);
   out_file << kDataChunkDescriptor;
   writeBytes<4>(out_file, header.data_chunk_size);
 
@@ -125,7 +124,7 @@ std::ifstream &operator>>(std::ifstream &in_file, WavHeader &header) {
 
   // Read the sample rate.
   const uint32_t sample_rate = *reinterpret_cast<uint32_t *>(&header_data[24]);
-  if (sample_rate != kSampleRate) {
+  if (sample_rate != SAMPLE_RATE) {
     throw std::runtime_error("Failed to read header. Invalid sample rate.");
   }
 
@@ -144,7 +143,7 @@ std::ifstream &operator>>(std::ifstream &in_file, WavHeader &header) {
   // Read the bits per sample.
   const uint16_t bits_per_sample =
       *reinterpret_cast<uint16_t *>(&header_data[34]);
-  if (bits_per_sample != kBitsPerSample) {
+  if (bits_per_sample != SAMPLE_RESOLUTION) {
     throw std::runtime_error("Failed to read header. Invalid bits per sample.");
   }
 

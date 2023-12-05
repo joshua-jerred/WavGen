@@ -2,12 +2,11 @@
 
 #include "gtest/gtest.h"
 
-#include "constants.hpp"
 #include "file.hpp"
 #include "wav_gen.hpp"
 
 const std::string kTestFileName = "test.wav";
-const uint32_t kHeaderSize = 44;
+const uint32_t HEADER_SIZE = 44;
 
 class WavGeneratorTest : public ::testing::Test {
 protected:
@@ -35,8 +34,8 @@ TEST_F(WavGeneratorTest, AddSineWaveDuration) {
   constexpr uint16_t kDuration = 1500;
 
   constexpr uint32_t kExpectedNumSamples =
-      kDuration * wavgen::kSampleRate / 1000;
-  constexpr uint32_t kExpectedFileSize = kExpectedNumSamples * 2 + kHeaderSize;
+      kDuration * wavgen::SAMPLE_RATE / 1000;
+  constexpr uint32_t kExpectedFileSize = kExpectedNumSamples * 2 + HEADER_SIZE;
 
   wavgen::Generator wav_file(kTestFileName);
   wav_file.addSineWave(kFrequency, kAmplitude, kDuration);
@@ -49,7 +48,7 @@ TEST_F(WavGeneratorTest, AddSineWaveDuration) {
   // ASSERT
   ASSERT_TRUE(std::filesystem::exists(kTestFileName));
   ASSERT_EQ(std::filesystem::file_size(kTestFileName), kExpectedFileSize);
-  ASSERT_EQ(writer_num_samples, writer_duration * wavgen::kSampleRate / 1000);
+  ASSERT_EQ(writer_num_samples, writer_duration * wavgen::SAMPLE_RATE / 1000);
   ASSERT_EQ(writer_duration, kDuration);
 }
 
@@ -58,7 +57,7 @@ TEST_F(WavGeneratorTest, AddSineWaveSamples) {
   constexpr uint16_t kFrequency = 410;
   constexpr float kAmplitude = 0.5f;
   constexpr uint16_t kNumSamples = 1000;
-  constexpr uint32_t kExpectedFileSize = kNumSamples * 2 + kHeaderSize;
+  constexpr uint32_t kExpectedFileSize = kNumSamples * 2 + HEADER_SIZE;
 
   wavgen::Generator wav_file(kTestFileName);
   wav_file.addSineWaveSamples(kFrequency, kAmplitude, kNumSamples);

@@ -43,7 +43,7 @@ void Reader::getAllSamples(std::vector<int16_t> &samples) {
   samples.reserve(num_samples);
 
   // Jump to the beginning of the data chunk.
-  wav_file_.seekg(kHeaderSize, std::ios::beg);
+  wav_file_.seekg(HEADER_SIZE, std::ios::beg);
 
   int16_t sample = 0;
   for (uint32_t i = 0; i < num_samples; i++) {

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(WavGen VERSION 1.0 DESCRIPTION "WAV file generator")
 
-option(WAVGEN_UNIT_TESTS "Enable tests" OFF)
+option(WAVGEN_UNIT_TESTS "Enable tests" ON)
 option(WAVGEN_EXAMPLE "Build the example" ON)
 
 
