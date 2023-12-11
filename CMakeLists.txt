@@ -30,6 +30,6 @@ if(WAVGEN_EXAMPLE)
     add_executable(example example.cpp)
     target_link_libraries(example WavGen)
 
-    add_executable(wav_stats wav_stats.cpp)
-    target_link_libraries(wav_stats WavGen)
+    # add_executable(wav_stats wav_stats.cpp)
+    # target_link_libraries(wav_stats WavGen)
 endif()
