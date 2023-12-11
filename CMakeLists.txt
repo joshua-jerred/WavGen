@@ -5,7 +5,7 @@ option(WAVGEN_UNIT_TESTS "Enable tests" ON)
 option(WAVGEN_EXAMPLE "Build the example" ON)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ansi -pedantic -Wall -Wextra -Weffc++ -Wdisabled-optimization -Wfloat-equal")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Wextra -Weffc++ -Wdisabled-optimization -Wfloat-equal")
 
 set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(INC ${CMAKE_CURRENT_SOURCE_DIR}/include)
