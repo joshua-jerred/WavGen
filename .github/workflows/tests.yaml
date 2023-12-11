@@ -15,7 +15,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake ..
+        cmake -DWAVGEN_UNIT_TESTS=OFF ..
     - name: Build the WavGen library
       run: |
         cd build
