@@ -9,6 +9,7 @@
 #ifndef WAV_FILE_HPP_
 #define WAV_FILE_HPP_
 
+#include <cstdint>
 #include <fstream>
 #include <vector>
 

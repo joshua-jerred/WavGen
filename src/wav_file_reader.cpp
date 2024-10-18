@@ -6,6 +6,8 @@
  * @copyright Copyright (c) 2023
  */
 
+#include <cstdint>
+
 #include "file.hpp"
 #include "wav_gen.hpp"
 
